@@ -46,10 +46,18 @@ describe('UserService', () => {
     });
 
     it('should throw a NotFoundException if user does not exist', async () => {
+      const testUser: UserEntity = {
+        id: 1,
+        username: 'testUser',
+        password: 'testPass',
+      };
+
       userRepository.findOne.mockResolvedValue(undefined);
 
       await expect(userService.findOne('testUser')).rejects.toThrow(
-        new NotFoundException(`User with username testUser not found`),
+        new NotFoundException(
+          `User with username ${testUser.username} not found`,
+        ),
       );
     });
   });
