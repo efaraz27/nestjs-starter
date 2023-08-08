@@ -18,17 +18,19 @@ export class UserService {
     const options = {
       where: { username },
     };
-    const user = this.userRepository.findOne(options);
+    const user = await this.userRepository.findOne(options);
 
-    if (user) {
-      return user;
+    if (!user) {
+      throw new NotFoundException(`User with username ${username} not found`);
     }
 
-    throw new NotFoundException(`User with username ${username} not found`);
+    return user;
   }
 
   async create(user: UserEntity): Promise<UserEntity> {
-    const existingUser = await this.findOne(user.username);
+    const existingUser = await this.userRepository.findOne({
+      where: { username: user.username },
+    });
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
